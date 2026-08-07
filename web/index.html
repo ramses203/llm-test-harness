@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>발주 접수 테스트</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#fff; --line:#e3e6ea; --tx:#1c1f23; --dim:#6b7280;
+    --accent:#2563eb; --ok:#16a34a; --warn:#d97706; --bad:#dc2626; --info:#7c3aed;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#15171a; --card:#1d2025; --line:#2e333a; --tx:#e6e8eb; --dim:#9aa3ad;
+           --accent:#60a5fa; --ok:#4ade80; --warn:#fbbf24; --bad:#f87171; --info:#c4b5fd; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+       font:15px/1.6 -apple-system,'Malgun Gothic','맑은 고딕',sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 18px 90px}
+  h1{font-size:20px;margin:0 0 2px}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+  .card h2{font-size:14px;margin:0 0 10px;color:var(--dim);font-weight:600}
+  textarea{width:100%;min-height:120px;padding:12px;border:1px solid var(--line);border-radius:8px;
+           background:var(--bg);color:var(--tx);font:14px/1.7 ui-monospace,Consolas,'맑은 고딕',monospace;resize:vertical}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}
+  button{font:inherit;padding:9px 16px;border-radius:7px;border:1px solid var(--line);
+         background:var(--card);color:var(--tx);cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button:disabled{opacity:.5;cursor:default}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+  button.chip{padding:5px 10px;font-size:12.5px;border-radius:20px}
+  button.chip.on{border-color:var(--accent);color:var(--accent)}
+  button.cand{padding:6px 12px;font-size:13px;border-radius:6px;margin:3px 6px 0 0;
+              border-color:var(--warn);color:var(--tx);text-align:left}
+  button.cand:hover{background:color-mix(in srgb,var(--ok) 14%,transparent);border-color:var(--ok)}
+  button.cand .code{font-family:ui-monospace,Consolas,monospace;font-weight:700;margin-right:7px}
+  button.tiny{padding:3px 9px;font-size:12px;border-radius:20px}
+  .grp{font-size:12px;color:var(--dim);margin:10px 0 5px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  th{font-size:12px;color:var(--dim);font-weight:600;white-space:nowrap}
+  tr.done td{background:color-mix(in srgb,var(--ok) 7%,transparent)}
+  .tbl-wrap{overflow-x:auto}
+  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap}
+  .t-ok{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}
+  .t-warn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+  .t-bad{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad)}
+  .t-info{background:color-mix(in srgb,var(--info) 18%,transparent);color:var(--info)}
+  .t-dim{background:color-mix(in srgb,var(--dim) 16%,transparent);color:var(--dim)}
+  .mono{font-family:ui-monospace,Consolas,monospace;font-size:13px}
+  .why{color:var(--dim);font-size:12.5px;margin-top:3px}
+  .ask{color:var(--warn);font-size:12.5px;margin:2px 0 4px}
+  .err{border-color:var(--bad)} .err h2{color:var(--bad)}
+  .hint{color:var(--warn);font-size:13px;margin-top:6px}
+  pre{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;
+      overflow-x:auto;font-size:12.5px;margin:0}
+  details summary{cursor:pointer;color:var(--dim);font-size:13px}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+        border-top-color:var(--accent);border-radius:50%;animation:s .7s linear infinite;vertical-align:-2px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .muted{color:var(--dim);font-size:13px}
+  .banner{background:color-mix(in srgb,var(--accent) 12%,transparent);border:1px solid var(--accent);
+          border-radius:8px;padding:8px 12px;font-size:13px;margin-bottom:12px}
+  #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:9;
+         background:var(--tx);color:var(--bg);padding:11px 18px;border-radius:8px;font-size:14px;
+         box-shadow:0 6px 24px rgba(0,0,0,.28);display:none;align-items:center;gap:14px}
+  #toast a{color:var(--bg);text-decoration:underline;cursor:pointer;opacity:.85;font-size:13px}
+  .learned-item{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+                border-radius:20px;padding:4px 6px 4px 12px;margin:0 6px 6px 0;font-size:13px}
+  .learned-item b{font-family:ui-monospace,Consolas,monospace;font-weight:700}
+  .x{cursor:pointer;color:var(--dim);border:0;background:none;padding:0 6px;font-size:15px;line-height:1}
+  .x:hover{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>발주 접수 테스트</h1>
+  <div class="sub" id="cfg">거래처 메시지를 넣으면 <b>판별 → 쪼개기 → 매칭</b> 결과를 보여줍니다</div>
+
+  <div class="card">
+    <h2>메시지</h2>
+    <textarea id="msg" placeholder="예)&#10;사장님 안녕하세요&#10;오늘 택배박스 250 5박스랑 에어캡 50 3롤 부탁드려요"></textarea>
+    <div class="row">
+      <button class="primary" id="go">분석하기</button>
+      <span class="muted">Ctrl+Enter</span>
+      <span id="stat" class="muted"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>기억한 것 <span class="muted" style="font-weight:400">— 확인필요에서 후보를 누르면 여기 쌓입니다</span></h2>
+    <div id="learned"></div>
+  </div>
+
+  <div class="card">
+    <h2>샘플 불러오기</h2>
+    <div id="samples"></div>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="card">
+    <details><summary>품목마스터 보기</summary>
+      <div class="tbl-wrap" id="master" style="margin-top:12px"></div></details>
+  </div>
+
+</div>
+<div id="toast"><span id="toastMsg"></span><a id="toastUndo">되돌리기</a></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let lastResult = null, lastSource = '', lastHist = 0, toastTimer = null;
+
+// ---------------------------------------------------------------- 표현 뽑기
+// "250 5" -> "250"  /  "뚜껑 흰거 5봉" -> "뚜껑 흰거"  /  "페트 500 8박스" -> "페트 500"
+function toExpr(s){
+  const t = String(s||'').replace(
+    /\s*\d+(\.\d+)?\s*(박스|봉지|봉|롤|개|매|장|팩|세트|ea|EA)?\s*(이요|요|주세요|부탁드려요|부탁해요)?\s*$/,'').trim();
+  return t || String(s||'').trim();
+}
+
+// ---------------------------------------------------------------- 토스트
+function toast(msg, undo){
+  $('#toastMsg').innerHTML = msg;
+  const a = $('#toastUndo');
+  a.style.display = undo ? '' : 'none';
+  a.onclick = () => { $('#toast').style.display='none'; undo && undo(); };
+  $('#toast').style.display = 'flex';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> $('#toast').style.display='none', 5000);
+}
+
+// ---------------------------------------------------------------- 학습 목록
+async function refreshLearned(){
+  const rows = await (await fetch('/api/learned')).json();
+  $('#learned').innerHTML = rows.length
+    ? rows.map(r => `<span class="learned-item">${esc(r['표현'])} → <b>${esc(r['품목코드'])}</b>
+        <button class="x" data-expr="${esc(r['표현'])}" title="잊기">&times;</button></span>`).join('')
+      + `<div class="row"><button class="tiny" id="forget">전부 잊기</button>
+         <span class="muted">${rows.length}건이 다음 분석에 적용됩니다</span></div>`
+    : '<span class="muted">아직 없습니다. 확인필요로 나온 줄에서 후보를 한 번 눌러보세요</span>';
+  $('#learned').querySelectorAll('.x').forEach(b => b.onclick = async () => {
+    await post('/api/unlearn', {'표현': b.dataset.expr});
+    refreshLearned(); toast('잊었습니다');
+  });
+  const f = $('#forget');
+  if(f) f.onclick = async () => { await post('/api/forget-all', {}); refreshLearned(); toast('전부 잊었습니다'); };
+}
+const post = (url, body) => fetch(url, {method:'POST', headers:{'content-type':'application/json'},
+                                       body: JSON.stringify(body)}).then(r=>r.json());
+
+// ---------------------------------------------------------------- 초기 로드
+fetch('/api/config').then(r=>r.json()).then(c =>
+  $('#cfg').innerHTML = `거래처 메시지를 넣으면 <b>판별 → 쪼개기 → 매칭</b> 결과를 보여줍니다
+    <span class="muted">· ${esc(c.provider)} / ${esc(c.model)}</span>`);
+
+const GRPNAME = {정상주문:'A 정상주문', 주문아님:'B 주문아님 🔴', 변경취소:'C 변경·취소 🔴',
+                 애매:'D 애매', 지저분:'E 지저분', 학습후:'F 학습후'};
+fetch('/api/samples').then(r=>r.json()).then(list=>{
+  const by = {};
+  list.forEach(c => (by[c.group] = by[c.group] || []).push(c));
+  $('#samples').innerHTML = Object.keys(by).map(g =>
+    `<div class="grp">${esc(GRPNAME[g]||g)}</div><div class="chips">` +
+    by[g].map(c => `<button class="chip" data-id="${c.id}" title="${esc(c.message)}">${c.id}</button>`).join('')
+    + `</div>`).join('');
+  const map = {}; list.forEach(c => map[c.id] = c.message);
+  $('#samples').addEventListener('click', e => {
+    const b = e.target.closest('button[data-id]'); if(!b) return;
+    $('#msg').value = map[b.dataset.id];
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); $('#out').innerHTML = '';
+  });
+});
+
+fetch('/api/master').then(r=>r.json()).then(rows=>{
+  if(!rows.length) return;
+  const cols = Object.keys(rows[0]);
+  $('#master').innerHTML = `<table><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td class="mono">${esc(r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+});
+refreshLearned();
+
+// ---------------------------------------------------------------- 실행
+async function run(){
+  const msg = $('#msg').value.trim();
+  if(!msg){ $('#msg').focus(); return; }
+  $('#go').disabled = true;
+  $('#stat').innerHTML = '<span class="spin"></span> 모델 호출 중';
+  $('#out').innerHTML = '';
+  try{
+    const d = await post('/api/parse', {message: msg});
+    if(d.error) renderErr(d);
+    else { lastResult = d.result; lastSource = d.source; lastHist = d.history_used||0; render(); }
+  }catch(e){ renderErr({error: e.message}); }
+  $('#go').disabled = false; $('#stat').textContent = '';
+}
+$('#go').onclick = run;
+$('#msg').addEventListener('keydown', e => { if(e.key==='Enter' && (e.ctrlKey||e.metaKey)) run(); });
+
+// ---------------------------------------------------------------- 렌더
+function renderErr(d){
+  $('#out').innerHTML = `<div class="card err"><h2>실패</h2><div>${esc(d.error)}</div>
+    ${d.hint?`<div class="hint">${esc(d.hint)}</div>`:''}
+    ${d.detail?`<details style="margin-top:10px"><summary>자세히</summary><pre>${esc(d.detail)}</pre></details>`:''}
+    ${d.raw?`<details style="margin-top:10px"><summary>원본 응답</summary><pre>${esc(d.raw)}</pre></details>`:''}</div>`;
+}
+
+const CLS = {신규주문:'t-ok', 변경:'t-bad', 취소:'t-bad', 추가:'t-bad', 가격문의:'t-info',
+             재고문의:'t-info', 배송문의:'t-info', 상품문의:'t-info', 기타:'t-dim'};
+const JUDGE = {기성품:'t-ok', 확인필요:'t-warn', 이력필요:'t-warn', 정보부족:'t-warn', 맞춤제작:'t-info'};
+
+function render(){
+  const res = lastResult, H = [];
+  const cls = res['분류']||[], orders = res['주문']||[], custom = res['맞춤제작']||[], non = res['비주문']||[];
+
+  if(lastHist) H.push(`<div class="banner">기억한 매칭 <b>${lastHist}건</b>을 적용해서 읽었습니다</div>`);
+
+  H.push(`<div class="card"><h2>1단계 · 판별</h2>
+    ${cls.length ? cls.map(c=>`<span class="tag ${CLS[c]||'t-dim'}" style="margin-right:6px">${esc(c)}</span>`).join('')
+                 : '<span class="muted">분류 없음</span>'}
+    ${cls.some(c=>['변경','취소','추가'].includes(c))
+      ? '<div class="hint">🔴 변경·취소·추가입니다. 신규주문으로 처리하면 중복 출고됩니다</div>':''}
+    ${!orders.length && !custom.length ? '<div class="why" style="margin-top:8px">주문 없음 — ERP로 넘길 것이 없습니다</div>':''}
+  </div>`);
+
+  if(orders.length){
+    H.push(`<div class="card"><h2>2·3단계 · 주문 ${orders.length}건</h2><div class="tbl-wrap"><table>
+      <thead><tr><th>원문</th><th>판정</th><th>품목코드</th><th>수량</th><th>단위</th><th>근거 · 후보</th></tr></thead>
+      <tbody>${orders.map((o,i)=>{
+        const j = o['판정']||'', cand = o['후보']||[], done = !!o._확정;
+        const needPick = ['확인필요','이력필요','정보부족'].includes(j) && cand.length;
+        return `<tr class="${done?'done':''}">
+          <td class="mono">${esc(o['원문'])}</td>
+          <td><span class="tag ${JUDGE[j]||'t-dim'}">${esc(j)}</span>${done?' <span class="tag t-ok">직접 고름</span>':''}</td>
+          <td class="mono">${o['품목코드']?esc(o['품목코드']):'<span class="muted">—</span>'}</td>
+          <td class="mono">${o['수량']==null?'<span class="muted">없음</span>':esc(o['수량'])}</td>
+          <td class="mono">${esc(o['단위']||'')}</td>
+          <td><div class="why">${esc(o['근거']||o['사유']||'')}</div>
+            ${needPick ? `<div class="ask">${j==='이력필요'
+                ? '아래에서 고르면 이 건에만 적용됩니다 (지시대명사라 기억하지 않습니다)'
+                : '아래에서 고르면 <b>「'+esc(toExpr(o['원문']))+'」</b> 로 기억합니다'}</div>` +
+              cand.map(c=>{
+                const code = String(c).trim().split(/\s+/)[0];
+                const rest = String(c).trim().slice(code.length).trim();
+                return `<button class="cand" data-i="${i}" data-code="${esc(code)}" data-learn="${j==='확인필요'?1:0}">
+                  <span class="code">${esc(code)}</span>${esc(rest)}</button>`;
+              }).join('') : ''}
+          </td></tr>`;}).join('')}</tbody></table></div>
+      <div class="row"><button id="csv">엑셀(CSV) 내려받기</button>
+        <span class="muted">확정된 줄만 담깁니다</span></div></div>`);
+  }
+
+  custom.forEach(m=>{
+    const got = m['확보']||{}, miss = m['누락']||[];
+    H.push(`<div class="card"><h2>맞춤제작 · ${esc(m['종류']||'')}</h2>
+      <div class="mono" style="margin-bottom:10px">${esc(m['원문'])}</div>
+      ${Object.keys(got).length?`<div>${Object.entries(got).map(([k,v])=>
+        `<span class="tag t-ok" style="margin:0 6px 6px 0">${esc(k)} ${esc(v)}</span>`).join('')}</div>`:''}
+      ${miss.length?`<div>${miss.map(k=>`<span class="tag t-bad" style="margin:0 6px 6px 0">${esc(k)} 누락</span>`).join('')}</div>`:''}
+      ${m['되물을문장']?`<div style="margin-top:10px"><div class="why">되물을 문장</div>
+        <pre>${esc(m['되물을문장'])}</pre></div>`:''}</div>`);
+  });
+
+  if(non.length) H.push(`<div class="card"><h2>주문 아님 ${non.length}건</h2><div class="tbl-wrap"><table>
+    <thead><tr><th>원문</th><th>분류</th></tr></thead><tbody>${non.map(n=>
+      `<tr><td class="mono">${esc(n['원문'])}</td>
+       <td><span class="tag ${CLS[n['분류']]||'t-dim'}">${esc(n['분류'])}</span></td></tr>`).join('')}
+    </tbody></table></div></div>`);
+
+  if(res['메모']) H.push(`<div class="card"><h2>메모</h2><div class="muted">${esc(res['메모'])}</div></div>`);
+  H.push(`<div class="card"><details><summary>원본 JSON · ${esc(lastSource)}</summary>
+    <pre style="margin-top:10px">${esc(JSON.stringify(res,null,2))}</pre></details></div>`);
+
+  $('#out').innerHTML = H.join('');
+  $('#out').querySelectorAll('button.cand').forEach(b => b.onclick = () => pick(b));
+  const c = $('#csv'); if(c) c.onclick = downloadCsv;
+}
+
+// ---------------------------------------------------------------- 후보 고르기
+async function pick(btn){
+  const i = +btn.dataset.i, code = btn.dataset.code, doLearn = btn.dataset.learn === '1';
+  const o = lastResult['주문'][i];
+  const expr = toExpr(o['원문']);
+  o['품목코드'] = code; o['판정'] = '기성품'; o._확정 = true;
+  o['근거'] = doLearn ? ('직접 고름 · 「'+expr+'」 기억함') : '직접 고름 (기억 안 함)';
+  delete o['후보'];
+  render();
+  if(doLearn){
+    await post('/api/learn', {'표현': expr, '품목코드': code});
+    await refreshLearned();
+    toast(`<b>「${esc(expr)}」</b> → <b>${esc(code)}</b> 기억했습니다. 다음부터 바로 확정됩니다`,
+          async () => { await post('/api/unlearn', {'표현': expr}); refreshLearned(); });
+  }
+}
+
+function downloadCsv(){
+  const rows = (lastResult['주문']||[]).filter(o=>o['판정']==='기성품' && o['품목코드']);
+  if(!rows.length){ alert('확정된 주문이 없습니다'); return; }
+  const csv = '품목코드,수량,단위\n' + rows.map(o=>[o['품목코드'],o['수량']==null?'':o['수량'],o['단위']||''].join(',')).join('\n');
+  const url = URL.createObjectURL(new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'}));
+  const a = document.createElement('a'); a.href = url; a.download = 'order.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

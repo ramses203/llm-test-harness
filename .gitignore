@@ -1,0 +1,7 @@
+.gemini_key
+.dfs_key
+out/
+out_*/
+__pycache__/
+*.pyc
+data/learned.json
