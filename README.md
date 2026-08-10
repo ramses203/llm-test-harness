@@ -98,6 +98,7 @@ python compare.py out_haiku out_gemini
 {
   "id": "F-4",
   "group": "학습후",
+  "rule_decidable": true,
   "message": "테이프 60 2박스",
   "history": [["테이프", "TAPE-48-CL"]],
   "expect": {
@@ -109,6 +110,8 @@ python compare.py out_haiku out_gemini
 ```
 
 `note`에 **왜 이 문제를 넣었는지** 적어두세요. 안 적으면 석 달 뒤에 지워버립니다.
+
+`rule_decidable`은 **자료만 보고 답이 하나로 정해지는 문항인지** 표시입니다. 모델과 정답지가 다를 때 이 표시가 심판이 됩니다 — `true` 문항이면 모델이 틀린 것이니 정답지를 지키고, `false` 문항이면 정답 자체가 「확인 필요」여야 합니다(다른 걸 적어놨다면 정답지 쪽 실수). 이 표시 없이 분쟁 때마다 즉석에서 판단하면 정답지가 모델 답을 따라가기 시작합니다. 1편 글에 댓글 주신 분의 제안으로 들어갔습니다.
 
 ### 지원하는 호출 방식
 

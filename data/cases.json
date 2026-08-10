@@ -2,6 +2,7 @@
   {
     "id": "A-1",
     "group": "정상주문",
+    "rule_decidable": false,
     "message": "안녕하세요 사장님\n오늘 택배박스 250 5박스랑 투명테이프 2박스 부탁드려요",
     "expect": {
       "orders": [
@@ -21,6 +22,7 @@
   {
     "id": "A-2",
     "group": "정상주문",
+    "rule_decidable": false,
     "message": "250박스 5개\n테이프 투명 2박스\n에어캡 50 3롤",
     "expect": {
       "orders": [
@@ -44,6 +46,7 @@
   {
     "id": "A-3",
     "group": "정상주문",
+    "rule_decidable": true,
     "message": "발주합니다\n- 우체국 4호 2박스\n- 옵피 2030 3봉\n- 지퍼백 15x20 2봉\n내일 오전까지 가능할까요?",
     "expect": {
       "orders": [
@@ -69,6 +72,7 @@
   {
     "id": "A-4",
     "group": "정상주문",
+    "rule_decidable": true,
     "message": "페트 300 투명 10박스 뚜껑 흰거 5봉이요",
     "expect": {
       "orders": [
@@ -88,6 +92,7 @@
   {
     "id": "B-1",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "사장님 안녕하세요",
     "expect": {
       "orders": [],
@@ -99,6 +104,7 @@
   {
     "id": "B-2",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "250박스 지금 얼마예요?",
     "expect": {
       "orders": [],
@@ -110,6 +116,7 @@
   {
     "id": "B-3",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "500페트 재고 있나요?",
     "expect": {
       "orders": [],
@@ -121,6 +128,7 @@
   {
     "id": "B-4",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "어제 보낸 물건 언제 도착하나요",
     "expect": {
       "orders": [],
@@ -132,6 +140,7 @@
   {
     "id": "B-5",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "세금계산서 발행 부탁드립니다",
     "expect": {
       "orders": [],
@@ -143,6 +152,7 @@
   {
     "id": "B-6",
     "group": "주문아님",
+    "rule_decidable": true,
     "message": "택배박스 250 규격이 어떻게 되나요?",
     "expect": {
       "orders": [],
@@ -155,6 +165,7 @@
   {
     "id": "C-1",
     "group": "변경취소",
+    "rule_decidable": true,
     "message": "아까 주문한거 취소해주세요",
     "expect": {
       "orders": [],
@@ -166,6 +177,7 @@
   {
     "id": "C-2",
     "group": "변경취소",
+    "rule_decidable": true,
     "message": "테이프 2박스를 3박스로 바꿔주세요",
     "expect": {
       "orders": [],
@@ -177,6 +189,7 @@
   {
     "id": "C-3",
     "group": "변경취소",
+    "rule_decidable": true,
     "message": "아까꺼에 에어캡 2롤 추가요",
     "expect": {
       "orders": [],
@@ -188,6 +201,7 @@
   {
     "id": "C-4",
     "group": "변경취소",
+    "rule_decidable": true,
     "message": "250박스 5박스 주문했는데 3박스만 보내주세요",
     "expect": {
       "orders": [],
@@ -199,6 +213,7 @@
   {
     "id": "D-1",
     "group": "애매",
+    "rule_decidable": false,
     "message": "저번에 시킨 그거 3박스요",
     "expect": {
       "orders": [
@@ -213,6 +228,7 @@
   {
     "id": "D-2",
     "group": "애매",
+    "rule_decidable": false,
     "message": "그 빨간거 2개 주세요",
     "expect": {
       "orders": [
@@ -227,6 +243,7 @@
   {
     "id": "D-3",
     "group": "애매",
+    "rule_decidable": false,
     "message": "박스 큰거 3박스",
     "expect": {
       "orders": [
@@ -241,6 +258,7 @@
   {
     "id": "D-4",
     "group": "애매",
+    "rule_decidable": false,
     "message": "페트 500 8박스",
     "expect": {
       "orders": [
@@ -255,6 +273,7 @@
   {
     "id": "D-5",
     "group": "애매",
+    "rule_decidable": false,
     "message": "택배박스 250 부탁해요",
     "expect": {
       "orders": [
@@ -270,6 +289,7 @@
   {
     "id": "E-1",
     "group": "지저분",
+    "rule_decidable": true,
     "message": "사장님 안녕하세요~^^\n지난번에 주신 견적으로\n택베박스 250 5박스\n에어켑 50 3롤\n부탁드립니다 감사합니다!!",
     "expect": {
       "orders": [
@@ -289,6 +309,7 @@
   {
     "id": "E-2",
     "group": "지저분",
+    "rule_decidable": false,
     "message": "250 5\n테이프 2\n에캡 3",
     "expect": {
       "orders": [
@@ -312,6 +333,7 @@
   {
     "id": "E-4",
     "group": "지저분",
+    "rule_decidable": true,
     "message": "택배박스 250 5박스\n아 아니다 3박스로 할게요",
     "expect": {
       "orders": [
@@ -327,10 +349,21 @@
   {
     "id": "F-1",
     "group": "학습후",
+    "rule_decidable": true,
     "message": "250 5박스",
-    "history": [["250", "BOX-A-250"]],
+    "history": [
+      [
+        "250",
+        "BOX-A-250"
+      ]
+    ],
     "expect": {
-      "orders": [["BOX-A-250", 5]],
+      "orders": [
+        [
+          "BOX-A-250",
+          5
+        ]
+      ],
       "non_order": [],
       "note": "기본 학습 - 축약 표현이 과거매칭으로 풀려야 한다"
     }
@@ -338,10 +371,21 @@
   {
     "id": "F-2",
     "group": "학습후",
+    "rule_decidable": true,
     "message": "250 5",
-    "history": [["250", "BOX-A-250"]],
+    "history": [
+      [
+        "250",
+        "BOX-A-250"
+      ]
+    ],
     "expect": {
-      "orders": [["BOX-A-250", 5]],
+      "orders": [
+        [
+          "BOX-A-250",
+          5
+        ]
+      ],
       "non_order": [],
       "note": "E-2 첫 줄과 같은 문장. 학습 전에는 확인필요가 맞았고 학습 후에는 확정돼야 한다. 이게 안 되면 제품 가치가 없다"
     }
@@ -349,10 +393,21 @@
   {
     "id": "F-3",
     "group": "학습후",
+    "rule_decidable": true,
     "message": "테이프 2박스",
-    "history": [["테이프", "TAPE-48-CL"]],
+    "history": [
+      [
+        "테이프",
+        "TAPE-48-CL"
+      ]
+    ],
     "expect": {
-      "orders": [["TAPE-48-CL", 2]],
+      "orders": [
+        [
+          "TAPE-48-CL",
+          2
+        ]
+      ],
       "non_order": [],
       "note": "후보 3개짜리 모호 표현이 학습으로 해소돼야 한다"
     }
@@ -360,10 +415,21 @@
   {
     "id": "F-4",
     "group": "학습후",
+    "rule_decidable": true,
     "message": "테이프 60 2박스",
-    "history": [["테이프", "TAPE-48-CL"]],
+    "history": [
+      [
+        "테이프",
+        "TAPE-48-CL"
+      ]
+    ],
     "expect": {
-      "orders": [["TAPE-60-CL", 2]],
+      "orders": [
+        [
+          "TAPE-60-CL",
+          2
+        ]
+      ],
       "non_order": [],
       "note": "🔴 명시 규격이 과거매칭을 이겨야 한다. 48을 내면 오출고"
     }
@@ -371,38 +437,80 @@
   {
     "id": "F-5",
     "group": "학습후",
+    "rule_decidable": true,
     "message": "250 규격이 어떻게 되나요?",
-    "history": [["250", "BOX-A-250"]],
+    "history": [
+      [
+        "250",
+        "BOX-A-250"
+      ]
+    ],
     "expect": {
       "orders": [],
-      "non_order": ["상품문의"],
+      "non_order": [
+        "상품문의"
+      ],
       "note": "🔴 학습이 있어도 문의는 문의다. 판별 단계를 뚫으면 안 된다"
     }
   },
   {
     "id": "F-6",
     "group": "학습후",
+    "rule_decidable": false,
     "message": "저번에 시킨 그거 3박스요",
-    "recent": [["2026-08-01", "BOX-A-250", "택배박스 A형 250x200x150", "5박스"]],
+    "recent": [
+      [
+        "2026-08-01",
+        "BOX-A-250",
+        "택배박스 A형 250x200x150",
+        "5박스"
+      ]
+    ],
     "expect": {
-      "orders": [["이력필요", 3]],
+      "orders": [
+        [
+          "이력필요",
+          3
+        ]
+      ],
       "non_order": [],
-      "candidates": ["BOX-A-250"],
+      "candidates": [
+        "BOX-A-250"
+      ],
       "note": "D-1과 같은 문장. 정정: 이력 1건이라도 자동확정하지 않는다. 저번에 시킨 그거는 지시대명사라 그 이력을 가리킨다는 보장이 없다. 대신 후보로 BOX-A-250을 정확히 집어내야 한다"
     }
   },
   {
     "id": "F-7",
     "group": "학습후",
+    "rule_decidable": false,
     "message": "저번에 시킨 그거 3박스요",
     "recent": [
-      ["2026-08-01", "BOX-A-250", "택배박스 A형 250x200x150", "5박스"],
-      ["2026-07-28", "TAPE-48-CL", "박스테이프 투명 48mm x 100m", "2박스"]
+      [
+        "2026-08-01",
+        "BOX-A-250",
+        "택배박스 A형 250x200x150",
+        "5박스"
+      ],
+      [
+        "2026-07-28",
+        "TAPE-48-CL",
+        "박스테이프 투명 48mm x 100m",
+        "2박스"
+      ]
     ],
     "expect": {
-      "orders": [["이력필요", 3]],
+      "orders": [
+        [
+          "이력필요",
+          3
+        ]
+      ],
       "non_order": [],
-      "candidates": ["BOX-A-250", "TAPE-48-CL"],
+      "candidates": [
+        "BOX-A-250",
+        "TAPE-48-CL"
+      ],
       "note": "🔴 최근주문이 둘이고 둘 다 박스 단위다. 하나로 단정하면 오출고. 둘 다 후보로 내야 한다"
     }
   }
