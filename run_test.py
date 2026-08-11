@@ -226,18 +226,27 @@ def score(case, res):
 
     exp_codes = [c for c, _ in exp_orders]
     act_codes = [c for c, _ in act]
+    # 답안이 확인필요로 넘기며 제시한 후보 전체 (물어본 건 판별에 쓴다)
+    cand_blob = " ".join(str(x) for o in (res.get("주문") or []) for x in (o.get("후보") or []))
 
     # 🔴 치명 1 — 주문 아닌 걸 주문으로
     if not exp_orders and act:
         issues.append(("치명", "주문이 아닌데 주문 %d건을 만듦 (%s)" % (len(act), act_codes)))
 
     # 🔴 치명 2 — 품목 오매칭 / 수량 오류
+    # ⚠️ 확정을 기대한 건을 답안이 "확인필요 + 후보"로 넘겼다면 누락이 아니다.
+    #    누락의 정의는 "놓쳤다"인데, 잡아서 물어본 것이므로 무해(과한 확인)다.
+    #    (AI 채점관 대조 실험에서 잡은 채점기 실수 3호)
+    asked_instead = 0
     for ec, eq in exp_orders:
         if ec in STATUS:
             continue
         hit = [(c, q) for c, q in act if c == ec]
         if not hit:
-            if any(c not in STATUS and c not in exp_codes for c, _ in act):
+            if ec in cand_blob:
+                issues.append(("무해", "%s 확정 대신 확인필요로 물어봄 (후보에는 있음)" % ec))
+                asked_instead += 1
+            elif any(c not in STATUS and c not in exp_codes for c, _ in act):
                 issues.append(("치명", "%s 를 못 잡고 엉뚱한 코드를 냄" % ec))
             else:
                 issues.append(("누락", "%s 누락" % ec))
@@ -250,9 +259,22 @@ def score(case, res):
     if n_status_exp > n_status_act:
         issues.append(("위험", "확인필요로 넘겼어야 할 %d건을 확정함" % (n_status_exp - n_status_act)))
 
-    # 🟢 무해 — 확인필요 남발
-    if n_status_act > n_status_exp:
-        issues.append(("무해", "확인필요 %d건 남발" % (n_status_act - n_status_exp)))
+    # 🟢 무해 — 확인필요 남발 (물어봄으로 이미 센 건은 중복으로 세지 않는다)
+    if n_status_act - n_status_exp - asked_instead > 0:
+        issues.append(("무해", "확인필요 %d건 남발" % (n_status_act - n_status_exp - asked_instead)))
+
+    # 🟢 무해 — 주문·맞춤제작 밖 영역의 확인 요청 (채점기 사각지대 보완)
+    #    답안이 별도 배열(예: "추가")에 판정=확인필요 항목을 남기는 경우가 있다.
+    #    사고는 아니지만 정답지에 없는 확인 절차이므로 무해로 센다.
+    extra_asked = sum(
+        1
+        for k, v in res.items()
+        if k not in ("주문", "맞춤제작", "분류", "비주문") and isinstance(v, list)
+        for o in v
+        if isinstance(o, dict) and o.get("판정") in STATUS
+    )
+    if extra_asked:
+        issues.append(("무해", "주문 외 영역에 확인 요청 %d건" % extra_asked))
 
     # 🟡 누락 — 건수 부족
     if len(act) < len(exp_orders) and not any(t == "누락" for t, _ in issues):
