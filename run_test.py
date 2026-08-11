@@ -97,7 +97,7 @@ def gemini_call(model, text):
     return d["candidates"][0]["content"]["parts"][0]["text"]
 
 
-def claudecli_call(model, text):
+def claudecli_call(model, text, timeout=300):
     """Claude Code 헤드리스 모드로 호출한다. API 키가 아니라 구독으로 돈다.
 
     --safe-mode      CLAUDE.md·스킬·플러그인·훅·MCP를 끈다. 인증은 정상 동작
@@ -115,7 +115,7 @@ def claudecli_call(model, text):
            "--system-prompt", "너는 발주 메시지를 읽고 JSON 하나만 출력하는 파서다.",
            "--output-format", "json", "--model", model]
     p = subprocess.run(cmd, input=text, capture_output=True,
-                       encoding="utf-8", errors="replace", timeout=300)
+                       encoding="utf-8", errors="replace", timeout=timeout)
     if p.returncode != 0:
         raise RuntimeError("claude CLI 실패 (rc=%s): %s" % (p.returncode, (p.stderr or "")[:400]))
     d = json.loads(p.stdout)
