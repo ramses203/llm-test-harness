@@ -5,3 +5,4 @@ out_*/
 __pycache__/
 *.pyc
 data/learned.json
+llm_exam/
