@@ -1,6 +1,6 @@
 # LLM 시험지 & 채점기
 
-AI한테 일을 맡기기 전에 **시험을 보게 하는** 도구입니다.
+AI한테 일을 맡기기 전에 **시험을 보게 하는** 도구입니다. — [English](README.en.md)
 
 ```
 python run_test.py --provider claude-cli --model claude-haiku-4-5
